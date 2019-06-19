@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jun 18 09:07:45 2019
-
-@author: Maciej
+@author: Maciej Ulaszewski
+mail:ulaszewski.maciej@gmail.com
+github: https://github.com/ulaszewskim
 """
 
 import pandas as pd

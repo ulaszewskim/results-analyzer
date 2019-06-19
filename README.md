@@ -8,11 +8,12 @@
   - [ ] chart of answers
   - [ ] save to docx file
   - [ ] information if there is possibility that key is wrong
-  - [ ] load pictures of questions
+  - [ ] insert pictures of questions to docx
 - [ ] GUI:
   - [X] create skeleton
   - [X] fill list with exams
-  - [ ] load answer files
+  - [ ] load answer file
   - [ ] load results file
   - [ ] select destination folder
+  - [ ] load pictures of questions
 - [ ] Help tab

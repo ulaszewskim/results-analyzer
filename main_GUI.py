@@ -121,61 +121,77 @@ sep.grid(column=2, row=1, sticky='w', padx=5)
 
 #select key
 key_h = tk.Label(frame1, text = "Select correct answers file:")
-key_h.grid(column=3, row=1, sticky='w', padx=5, columnspan=3)
+key_h.grid(column=0, row=3, sticky='w', padx=5, columnspan=3)
 
 key_file = tk.StringVar()
 key_dir = tk.Entry(frame1, width=43, state = 'normal', textvariable = key_file)
-key_dir.grid(column=3, row=2, sticky='w', padx=5, columnspan=3)
+key_dir.grid(column=0, row=4, sticky='w', padx=5)
 
 key_btn = tk.Button(frame1, text = 'Select')
-key_btn.grid(column=6, row=2, sticky='w', padx=7)
+key_btn.grid(column=1, row=4, sticky='w')
 
 
 #separator
 sep = tk.Label(frame1, text = "")
-sep.grid(column=2, row=3, sticky='w', padx=5)
+sep.grid(column=2, row=4, sticky='w', padx=5)
 
 
 #Select destination folder
 dst_h = tk.Label(frame1, text = "Select destination folder:")
-dst_h.grid(column=0, row=3, sticky='w', padx=5)
+dst_h.grid(column=0, row=5, sticky='w', padx=5)
 
 dst_file = tk.StringVar()
 dst_dir = tk.Entry(frame1, width=43, state = 'normal', textvariable = dst_file)
-dst_dir.grid(column=0, row=4, sticky='w', padx=5)
+dst_dir.grid(column=0, row=6, sticky='w', padx=5)
 
 dst_btn = tk.Button(frame1, text = 'Select')
-dst_btn.grid(column=1, row=4, sticky='w')
+dst_btn.grid(column=1, row=6, sticky='w')
 
 
 #Input separator when multiple answers
 allcor_h = tk.Label(frame1, text = "Multiple separator:")
-allcor_h.grid(column=5, row=3, sticky='w', padx=5)
+allcor_h.grid(column=3, row=2, sticky='w')
 
 allcor = tk.StringVar()
-allcor_dir = tk.Entry(frame1, width=15, state = 'normal', textvariable = allcor)
-allcor_dir.grid(column=5, row=4, sticky='w', padx=5)
-
+allcor_dir = tk.Entry(frame1, width=10, state = 'normal', textvariable = allcor)
+allcor_dir.grid(column=4, row=2, sticky='w', padx=2)
+'''
 #separator
 sep = tk.Label(frame1, text = "")
-sep.grid(column=2, row=3, sticky='w', padx=5)
-
-#Input sign when all answersa are correct
+sep.grid(column=2, row=2, sticky='w', padx=5)
+'''
+#Input sign when all answers are correct
 sep_h = tk.Label(frame1, text = "All correct symbol:")
-sep_h.grid(column=3, row=3, sticky='w', padx=5)
+sep_h.grid(column=3, row=4, sticky='w')
 
 sep = tk.StringVar()
-sep_dir = tk.Entry(frame1, width=15, state = 'normal', textvariable = sep)
-sep_dir.grid(column=3, row=4, sticky='w', padx=5)
+sep_dir = tk.Entry(frame1, width=10, state = 'normal', textvariable = sep)
+sep_dir.grid(column=4, row=4, sticky='w', padx=2)
+
+#pass rate
+pass_rate_h = tk.Label(frame1, text="Pass rate:")
+pass_rate_h.grid(column=3, row=6, sticky='W')
+
+pass_r = tk.StringVar()
+pass_rate = tk.Entry(frame1, width=10, state='normal', textvariable = pass_r)
+pass_rate.grid(column=4, row=6, sticky='W', padx=2)
+
+#pass rate unit
+pass_unit = tk.IntVar()
+pass_pt = tk.Radiobutton(frame1, text = 'Points', variable = pass_unit, value=1)
+pass_pt.grid(column=5, row=6, sticky='W')
+
+pass_per = tk.Radiobutton(frame1, text = '%', variable = pass_unit, value=2)
+pass_per.grid(column=6, row=6, sticky='W')
 
 #========
 #Exams
 #========
 frame_canvas = tk.Frame(frame1)
-frame_canvas.grid(row=5, column=0, columnspan=100, sticky='news', pady=5, padx=5)
+frame_canvas.grid(row=7, column=0, columnspan=100, sticky='news', pady=5, padx=5)
 frame_canvas.grid_propagate(True)
 
-canvas = tk.Canvas(frame_canvas, height=630, width=660)
+canvas = tk.Canvas(frame_canvas, height=580, width=660)
 canvas.grid(row=0, column=0, sticky='news')
 
 #scrollbar

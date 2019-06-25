@@ -7,60 +7,98 @@ github: https://github.com/ulaszewskim
 
 import tkinter as tk
 from tkinter import ttk
-from GetExamNames import GetExamNames
+import tkinter.filedialog as fd
 
+from GetExamNames import GetExamNames
+from LoadCsv import LoadKeys
 
 
 
 #================
 #Functions
 #================
-def FillTable(results, answers):
-    exams = GetExamNames(results)
+def FillTable(resultsfile, keysfile):
+    exams = GetExamNames(resultsfile)
+    if keysfile != '':
+        answers = LoadKeys(keysfile)
     row=1
+    
+    
+    
     for i in range(len(exams)):
         exam = exams[i]
         
         chk = tk.Checkbutton(exams_win)
         chk.grid(row=row, column=0, pady=2, padx=2)
         
-        var = tk.StringVar()
-        var.set(exam)
-        examname = tk.Entry(exams_win, textvariable=var, state='disabled', disabledbackground='gray95', disabledforeground='black', width=35)
+        var_name = tk.StringVar()
+        var_name.set(exam[0])
+        examname = tk.Entry(exams_win, textvariable=var_name, state='disabled', disabledbackground='gray95', disabledforeground='black', width=25)
         examname.grid(row=row, column=1, pady=2, padx=2)
         
-        var = tk.StringVar()
-        var.set('?')
-        examname = tk.Entry(exams_win, textvariable=var, state='disabled', disabledbackground='gray95', disabledforeground='black', width=8)
-        examname.grid(row=row, column=2, pady=2, padx=2)
+        var_ver = tk.StringVar()
+        var_ver.set(exam[1])
+        vers = tk.Entry(exams_win, textvariable=var_ver, state='disabled', disabledbackground='gray95', disabledforeground='black', width=10)
+        vers.grid(row=row, column=2, pady=2, padx=2)
+        
+        disabledfg='red'
+        var_k = tk.StringVar()
+        if keysfile == '':
+            var_k.set('')
+        else:
+            for k in range(len(answers)):
+                var_k.set('No key')
+#                print(answers[k][0], exam[0], answers[k][1], exam[1])
+                if answers[k][0] == exam[0] and answers[k][1] == exam[1]:
+                    var_k.set('Loaded')
+                    disabledfg='black'
+                    del answers[k]
+                    break
+                
+        examname = tk.Entry(exams_win, textvariable=var_k, state='disabled', disabledbackground='gray95', disabledforeground=disabledfg, width=8)
+        examname.grid(row=row, column=3, pady=2, padx=2)
         
         var = tk.StringVar()
         var.set('loaded')
         examname = tk.Entry(exams_win, textvariable=var, state='disabled', disabledbackground='gray95', disabledforeground='black', width=8)
-        examname.grid(row=row, column=3, pady=2, padx=2)
-        
-        examname = tk.Button(exams_win, text="Load", font=('','8'), bg='wheat1', width=10)
         examname.grid(row=row, column=4, pady=2, padx=2)
         
-        var = tk.StringVar()
-        var.set(str(exams[i]) + '_results.docx')
-        examname = tk.Entry(exams_win, textvariable=var, state='disabled', disabledbackground='gray95', disabledforeground='black', width=35)
+        examname = tk.Button(exams_win, text="Load", font=('','8'), bg='wheat1', width=10)
         examname.grid(row=row, column=5, pady=2, padx=2)
         
+        var = tk.StringVar()
+        var.set(str(exams[i][0])+'_'+str(exams[i][1]) + '_results.docx')
+        examname = tk.Entry(exams_win, textvariable=var, state='disabled', disabledbackground='gray95', disabledforeground='black', width=33 )
+        examname.grid(row=row, column=6, pady=2, padx=2)
+        
         row+=1
+        
+    exams_win.update_idletasks()
+    canvas.config(scrollregion=canvas.bbox('all'))
 
 
 
 
 
+def ChooseResultsFile():
+    resultsfile = fd.askopenfilename(filetypes=[('.csv', '*.csv')])
+    csv_dir.delete(0, tk.END)
+    csv_dir.insert(tk.INSERT, resultsfile)
+    FillTable(csv_dir.get(),key_dir.get())
+
+
+def ChooseKeysFile():
+    keysfile = fd.askopenfilename(filetypes=[('.csv', '*.csv')])
+    key_dir.delete(0, tk.END)
+    key_dir.insert(tk.INSERT, keysfile)
+    FillTable(csv_dir.get(),key_dir.get())
 
 
 
-
-
-
-
-
+def ChooseDestinationFolder():
+    destination = fd.askdirectory()
+    dst_dir.delete(0, tk.END)
+    dst_dir.insert(tk.INSERT, destination)
 
 
 
@@ -110,7 +148,7 @@ csv_file = tk.StringVar()
 csv_dir = tk.Entry(frame1, width=43, state = 'normal', textvariable = csv_file)
 csv_dir.grid(column=0, row=2, sticky='w', padx=5)
 
-csv_btn = tk.Button(frame1, text = 'Select')
+csv_btn = tk.Button(frame1, text = 'Select', command=ChooseResultsFile)
 csv_btn.grid(column=1, row=2, sticky='w')
 
 
@@ -127,7 +165,7 @@ key_file = tk.StringVar()
 key_dir = tk.Entry(frame1, width=43, state = 'normal', textvariable = key_file)
 key_dir.grid(column=0, row=4, sticky='w', padx=5)
 
-key_btn = tk.Button(frame1, text = 'Select')
+key_btn = tk.Button(frame1, text = 'Select', command = ChooseKeysFile)
 key_btn.grid(column=1, row=4, sticky='w')
 
 
@@ -144,7 +182,7 @@ dst_file = tk.StringVar()
 dst_dir = tk.Entry(frame1, width=43, state = 'normal', textvariable = dst_file)
 dst_dir.grid(column=0, row=6, sticky='w', padx=5)
 
-dst_btn = tk.Button(frame1, text = 'Select')
+dst_btn = tk.Button(frame1, text = 'Select', command=ChooseDestinationFolder)
 dst_btn.grid(column=1, row=6, sticky='w')
 
 
@@ -208,25 +246,28 @@ canvas.create_window((0,0), window=exams_win, anchor='nw')
 select_h = tk.Checkbutton(exams_win)
 select_h.grid(column=0, row=0, sticky='')
 
-exam_h = tk.Label(exams_win, text="Exam", font=('','9','bold'), bg='lightblue')
+exam_h = tk.Label(exams_win, text="Exam", font=('','9','bold'))
 exam_h.grid(column=1, row=0, sticky='w')
 
+ver_h = tk.Label(exams_win, text="Version", font=('','9','bold'))
+ver_h.grid(column=2, row=0, sticky='w')
+
 answers_h = tk.Label(exams_win, text="Answers", font=('','9','bold'))
-answers_h.grid(column=2, row=0, sticky='w')
+answers_h.grid(column=3, row=0, sticky='w')
 
 pictures_h = tk.Label(exams_win, text="Pictures", font=('','9','bold'))
-pictures_h.grid(column=3, row=0, sticky='w')
+pictures_h.grid(column=4, row=0, sticky='w')
 
 pictures_select_h = tk.Label(exams_win, text="Load", font=('','9','bold'))
-pictures_select_h.grid(column=4, row=0)
+pictures_select_h.grid(column=5, row=0)
 
 report_file_h = tk.Label(exams_win, text="New file", font=('','9','bold'))
-report_file_h.grid(column=5, row=0, sticky='w')
+report_file_h.grid(column=6, row=0, sticky='w')
 
 
 
 
-FillTable('results.csv','keys.csv')
+#FillTable('results.csv','keys.csv')
 
 
 #scroll options

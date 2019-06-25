@@ -2,8 +2,8 @@
 
 ## TO DO:
 - [ ] main function:
-  - [ ] load answers
-  - [ ] load results
+  - [X] load answers
+  - [X] load results
   - [ ] pass rate
   - [ ] chart of answers
   - [ ] save to docx file
@@ -12,8 +12,8 @@
 - [ ] GUI:
   - [X] create skeleton
   - [X] fill list with exams
-  - [ ] load answer file
-  - [ ] load results file
-  - [ ] select destination folder
+  - [X] load answer file
+  - [X] load results file
+  - [X] select destination folder
   - [ ] load pictures of questions
 - [ ] Help tab

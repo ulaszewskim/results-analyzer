@@ -4,7 +4,7 @@
 - [ ] main function:
   - [X] load answers
   - [X] load results
-  - [ ] pass rate
+  - [X] pass rate
   - [ ] chart of answers
   - [ ] save to docx file
   - [ ] information if there is possibility that key is wrong

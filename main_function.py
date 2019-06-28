@@ -15,7 +15,7 @@ resultsfile='results.csv'
 
 keysfile = 'keys2.csv'
 
-e=1
+e=2
 
 answers = LoadAnswers(resultsfile, exams[e])
 keys = LoadKeys(keysfile)
@@ -43,8 +43,8 @@ percent_passed = round(how_many_passed/len(results) *100,2)
 
 
 distribution_of_point = {}
-for a in range(len(answers[0])-2):
-    distribution_of_point[a+1]=0
+for a in range(len(answers[0])-1):
+    distribution_of_point[a]=0
 
 for z in range(len(results)):
     index = results[z][-2]
@@ -87,4 +87,90 @@ print('====\nQuestion {} stats:\nCorrect answer: {}\nA: {} ({}%)\nB: {} ({}%)\nC
 
 
 
+
+
+#============
+#Chart for all results
+#============
+
+
+import plotly as py
+import plotly.graph_objs as go
+
+
+
+points=[]
+for a in range(total_q+1):
+    points.append(distribution_of_point[a])
+
+
+
+trace1 = go.Bar(
+        x=list(range(total_q+1)),
+        y=points,
+        name='Total points',
+        text=points,
+        textposition='outside',
+        textfont=dict(
+                size=9,
+                color='dimgray'),
+        marker=dict(
+                color='rgb(158,202,225)',
+                line=dict(
+                    color='rgb(8,48,107)',
+                    width=1),
+            ),
+        )
+x=list(range(total_q+1))
+data=[trace1]
+
+if max(points)<10:
+    y_dtick = 'auto'
+else:
+    y_dtick=None
+
+layout = go.Layout(
+        title=go.layout.Title(
+        text='Total points',
+        xref='paper',
+        x=0.5,
+        font=dict(
+                size=24)
+        ),
+    xaxis = dict(
+            title='Points',
+            titlefont=dict(
+                    family='Arial',
+                    size=18,
+                    color='black'
+                    ),
+            dtick=1
+            ),
+    yaxis = dict(
+            title='Number of results',
+            titlefont=dict(
+                    family='Arial',
+                    size=18,
+                    color='black'
+                    ),
+            dtick = y_dtick
+            ),
+    shapes = [dict(
+            type='line',
+            x0=pass_rate-0.5,
+            y0=0,
+            x1=pass_rate-0.5,
+            y1=max(points),
+            line= dict(
+                color= 'lightgreen',
+                width= 2,
+                )
+            )]
+    )
+
+fig = go.Figure(data=data, layout=layout)
+fig.add_bar()
+
+
+py.io.write_image(fig, 'chart.png', format='png', width=1000, height=500)
 

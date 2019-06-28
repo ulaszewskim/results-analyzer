@@ -14,7 +14,7 @@
     - [ ] chart of answers
     - [ ] information if there is possibility that key is wrong
   - [ ] save to PDF file
-  - [ ] insert pictures of questions to docx
+  - [ ] insert pictures of questions to pdf
 - [ ] GUI:
   - [X] create skeleton
   - [X] fill list with exams

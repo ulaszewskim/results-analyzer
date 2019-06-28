@@ -15,7 +15,7 @@ resultsfile='results.csv'
 
 keysfile = 'keys2.csv'
 
-e=2
+e=0
 
 answers = LoadAnswers(resultsfile, exams[e])
 keys = LoadKeys(keysfile)
@@ -103,6 +103,13 @@ points=[]
 for a in range(total_q+1):
     points.append(distribution_of_point[a])
 
+colors = []
+for c in range(len(points)):
+    if c<pass_rate:
+        colors.append('rgb(227, 27, 27)')
+    else:
+        colors.append('rgb(25, 189, 13)')
+
 
 
 trace1 = go.Bar(
@@ -112,12 +119,12 @@ trace1 = go.Bar(
         text=points,
         textposition='outside',
         textfont=dict(
-                size=9,
+                size=11,
                 color='dimgray'),
         marker=dict(
-                color='rgb(158,202,225)',
+                color=colors,
                 line=dict(
-                    color='rgb(8,48,107)',
+                    color='dimgray',
                     width=1),
             ),
         )
@@ -162,7 +169,7 @@ layout = go.Layout(
             x1=pass_rate-0.5,
             y1=max(points),
             line= dict(
-                color= 'lightgreen',
+                color= 'lightblue',
                 width= 2,
                 )
             )]
@@ -172,5 +179,5 @@ fig = go.Figure(data=data, layout=layout)
 fig.add_bar()
 
 
-py.io.write_image(fig, 'chart.png', format='png', width=1000, height=500)
+py.io.write_image(fig, 'chart.svg', format='svg', width=1000, height=600)
 

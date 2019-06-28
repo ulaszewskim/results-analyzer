@@ -9,7 +9,7 @@ from LoadCsv import LoadAnswers, LoadKeys
 from GetResults import GetResults
 from GetKey import GetKey
 
-exams = [['E.12','X'], ['R.21','X'], ['A.12','X']]
+exams = [['E.14','X'], ['R.21','X'], ['A.12','X']]
 
 resultsfile='results.csv'
 
@@ -53,9 +53,14 @@ for z in range(len(results)):
 print('====\nTotal stats:\nTotal students: {}\nPassed: {} students ({}%)\n===='.format(len(results), how_many_passed, percent_passed))
 
 
+
+
+
+
+
 #Information about one question
 total_q = len(results[0])-2
-question_number = 1 #START FROM 1
+question_number = 2 #START FROM 1
 
 distibution_of_answers= {
         'A':0,
@@ -68,7 +73,10 @@ distibution_of_answers= {
 
 for a in range(len(answers)):
     q = answers[a][question_number+1]
-    distibution_of_answers[q]+=1
+    if q in distibution_of_answers:
+        distibution_of_answers[q]+=1
+    else:
+        print(a, q)
 
 
 distibution_of_answers_percent= {
@@ -145,39 +153,100 @@ layout = go.Layout(
                 size=24)
         ),
     xaxis = dict(
+            linecolor='black',
+            mirror=True,
             title='Points',
             titlefont=dict(
                     family='Arial',
-                    size=18,
+                    size=16,
                     color='black'
                     ),
             dtick=1
             ),
     yaxis = dict(
+            linecolor='black',
+            mirror=True,
             title='Number of results',
             titlefont=dict(
                     family='Arial',
-                    size=18,
+                    size=16,
                     color='black'
                     ),
             dtick = y_dtick
             ),
-    shapes = [dict(
-            type='line',
-            x0=pass_rate-0.5,
-            y0=0,
-            x1=pass_rate-0.5,
-            y1=max(points),
-            line= dict(
-                color= 'lightblue',
-                width= 2,
-                )
-            )]
+#    plot_bgcolor='rgb(245, 255, 254)'
+#    shapes = [dict(
+#            type='line',
+#            x0=pass_rate-0.5,
+#            y0=0,
+#            x1=pass_rate-0.5,
+#            y1=max(points),
+#            line= dict(
+#                color= 'lightblue',
+#                width= 2,
+#                )
+#            )]
     )
 
 fig = go.Figure(data=data, layout=layout)
 fig.add_bar()
 
 
-py.io.write_image(fig, 'chart.svg', format='svg', width=1000, height=600)
+py.io.write_image(fig, 'chart.svg', format='svg', width=900, height=500)
 
+
+
+
+#============
+#Table for all results
+#============
+
+total_stats = [
+        ['Questions','Total students', 'Passed', 'Failed'],
+        [total_q,len(results), str(how_many_passed)+' ('+str(percent_passed)+'%)', str(len(results)-how_many_passed)+' ('+str(100-percent_passed)+'%)']
+        ]
+
+table = go.Table(
+        header = dict(
+                values=['<b>Information</b>', '<b>Value</b>'],
+                fill = dict(color='#a1c3d1'),
+                ),
+        cells=dict(
+                values = [total_stats[0], total_stats[1]])
+        )
+
+data=[table]
+fig = go.Figure(data=data)
+fig.add_table()
+py.io.write_image(fig, 'table.svg', format='svg', width=500)
+
+
+
+#============
+#Table for one question
+#============
+question_stats = [
+        ['Question number','Correct answer', '<b>Answer</b>','A', 'B','C','D'],
+        [question_number, key[question_number+1], '<b>Number of answers</b>',
+         str(distibution_of_answers['A']) + ' (' + str(distibution_of_answers_percent['A'])+'%)',
+         str(distibution_of_answers['B']) + ' (' + str(distibution_of_answers_percent['B'])+'%)',
+         str(distibution_of_answers['C']) + ' (' + str(distibution_of_answers_percent['C'])+'%)',
+         str(distibution_of_answers['D']) + ' (' + str(distibution_of_answers_percent['D'])+'%)']
+        ]
+
+table = go.Table(
+        header = dict(
+                values=['<b>Information</b>', '<b>Value</b>'],
+                fill = dict(color='#a1c3d1'),
+                ),
+        cells=dict(
+                values = [question_stats[0], question_stats[1]],
+                
+                )
+        )
+
+
+data=[table]
+fig = go.Figure(data=data)
+fig.add_table()
+py.io.write_image(fig, 'table_Q.svg', format='svg', width=500)

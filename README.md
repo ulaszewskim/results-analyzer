@@ -8,7 +8,7 @@
   - [ ] total results analysis:
     - [ ] table with data
     - [X] chart
-        - [ ] color of bar depends if passed/failed
+        - [X] color of bar depends if passed/failed
   - [ ] question analysis: 
     - [ ] table with data
     - [ ] chart of answers

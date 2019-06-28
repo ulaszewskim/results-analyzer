@@ -5,8 +5,8 @@
   - [X] load answers
   - [X] load results
   - [X] pass rate
-  - [ ] total results analysis:
-    - [ ] table with data
+  - [X] total results analysis:
+    - [X] table with data
     - [X] chart
         - [X] color of bar depends if passed/failed
   - [ ] question analysis: 

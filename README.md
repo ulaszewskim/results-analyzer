@@ -11,7 +11,7 @@
         - [X] color of bar depends if passed/failed
   - [ ] question analysis: 
     - [ ] table with data
-    - [ ] chart of answers
+    - [X] chart of answers
     - [ ] information if there is possibility that key is wrong
   - [ ] save to PDF file
   - [ ] insert pictures of questions to pdf

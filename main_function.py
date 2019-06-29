@@ -250,3 +250,69 @@ data=[table]
 fig = go.Figure(data=data)
 fig.add_table()
 py.io.write_image(fig, 'table_Q.svg', format='svg', width=500)
+
+
+
+#============
+#Chart for one question
+#============
+
+trace1 = go.Bar(
+        x=list(distibution_of_answers),
+        y=list(distibution_of_answers.values()),
+        name='Question {} answers'.format(question_number),
+        text=list(distibution_of_answers.values()),
+        textposition='outside',
+        textfont=dict(
+                size=11,
+                color='black'),
+        marker=dict(
+                color='rgb(66, 135, 245)',
+                line=dict(
+                    color='dimgray',
+                    width=1),
+            ),
+        )
+
+
+data=[trace1]
+
+layout = go.Layout(
+        title=go.layout.Title(
+        text='Question {} - answers'.format(question_number),
+        xref='paper',
+        x=0.5,
+        font=dict(
+                size=24)
+        ),
+    xaxis = dict(
+            linecolor='black',
+            mirror=True,
+            title='Answer',
+            titlefont=dict(
+                    family='Arial',
+                    size=16,
+                    color='black'
+                    ),
+            ),
+    yaxis = dict(
+            linecolor='black',
+            mirror=True,
+            title='Count',
+            titlefont=dict(
+                    family='Arial',
+                    size=16,
+                    color='black'
+                    ),
+#            dtick = y_dtick
+            ),
+    )
+
+fig = go.Figure(data=data, layout=layout)
+fig.add_bar()
+
+
+py.io.write_image(fig, 'question.svg', format='svg', width=900, height=500)
+
+
+a=list(distibution_of_answers.values())

@@ -10,11 +10,17 @@
     - [X] chart
         - [X] color of bar depends if passed/failed
   - [ ] question analysis: 
-    - [ ] table with data
+    - [X] table with data
     - [X] chart of answers
     - [ ] information if there is possibility that key is wrong
-  - [ ] save to PDF file
-  - [ ] insert pictures of questions to pdf
+- [ ] image functions: 
+  - [X] cut white area
+  - [ ] merge images vertical
+  - [ ] merge images horizontal
+- [ ] save to PDF file
+  - [ ] cover
+  - [ ] total stats
+  - [ ] question stats
 - [ ] GUI:
   - [X] create skeleton
   - [X] fill list with exams

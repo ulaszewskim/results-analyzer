@@ -15,8 +15,9 @@
     - [ ] information if there is possibility that key is wrong
 - [ ] image functions: 
   - [X] cut white area
-  - [ ] merge images vertical
-  - [ ] merge images horizontal
+  - [X] merge images vertical
+  - [X] merge images horizontal
+  - [ ] resize to specific width
 - [ ] save to PDF file
   - [ ] cover
   - [ ] total stats

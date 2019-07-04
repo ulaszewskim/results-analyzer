@@ -17,7 +17,7 @@
   - [X] cut white area
   - [X] merge images vertical
   - [X] merge images horizontal
-  - [ ] resize to specific width
+  - [X] resize to specific width
 - [ ] save to PDF file
   - [ ] cover
   - [ ] total stats
@@ -28,5 +28,6 @@
   - [X] load answer file
   - [X] load results file
   - [X] select destination folder
-  - [ ] load pictures of questions
+  - [X] load pictures of questions
+  - [X] select options
 - [ ] Help tab

@@ -1,7 +1,7 @@
 # results-analyzer
 
 ## TO DO:
-- [ ] main function:
+- [X] main function:
   - [X] load answers
   - [X] load results
   - [X] pass rate
@@ -9,11 +9,11 @@
     - [X] table with data
     - [X] chart
         - [X] color of bar depends if passed/failed
-  - [ ] question analysis: 
+  - [X] question analysis: 
     - [X] table with data
     - [X] chart of answers
-    - [ ] information if there is possibility that key is wrong
-- [ ] image functions: 
+    - [X] information if there is possibility that key is wrong
+- [X] image functions: 
   - [X] cut white area
   - [X] merge images vertical
   - [X] merge images horizontal

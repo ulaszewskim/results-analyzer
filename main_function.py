@@ -15,6 +15,9 @@ from GetResults import GetResults
 from GetKey import GetKey
 from ImageFunctions import CropEmptySpace, MergeVertical, MergeHorizontal, ResizeWidth
 
+
+
+
 exams = [['E.14','X'], ['R.21','X'], ['A.12','X']]
 
 resultsfile='results.csv'
@@ -32,7 +35,13 @@ all_correct = '1*'
 multiple_sign = ' lub '
 pass_rate = 21
 
-question_images = list(())
+question_images = list(('C:/_lokalne/python/exam_results/ZADANIA/E.14-X-19.06_ZMIANA_14-00_(01).png',
+              'C:/_lokalne/python/exam_results/ZADANIA/E.14-X-19.06_ZMIANA_14-00_(02).png',
+              'C:/_lokalne/python/exam_results/ZADANIA/E.14-X-19.06_ZMIANA_14-00_(03).png',
+              'C:/_lokalne/python/exam_results/ZADANIA/E.14-X-19.06_ZMIANA_14-00_(04).png',
+              'C:/_lokalne/python/exam_results/ZADANIA/E.14-X-19.06_ZMIANA_14-00_(05).png',
+              'C:/_lokalne/python/exam_results/ZADANIA/E.14-X-19.06_ZMIANA_14-00_(06).png',
+              ))
 
 
 
@@ -138,8 +147,11 @@ def TotalResults(results):
     
     fig = go.Figure(data=data, layout=layout)
     
-    py.io.write_image(fig, '_temp_image_chart.png', format='png', width=900, height=500, scale=2)
-    CropEmptySpace('_temp_image_chart.png', '_temp_image_chart.png')
+    if not os.path.exists('results_temp'):
+        os.makedirs('results_temp')
+    
+    py.io.write_image(fig, 'results_temp/_temp_image_chart.png', format='png', width=900, height=500, scale=2)
+    CropEmptySpace('results_temp/_temp_image_chart.png', 'results_temp/_temp_image_chart.png')
     
     
     #============
@@ -168,24 +180,21 @@ def TotalResults(results):
     
     data_t=[table_t]
     fig_t = go.Figure(data=data_t)
-    py.io.write_image(fig_t, '_temp_image_table_t.png', format='png', width=500, scale=2)
-    CropEmptySpace('_temp_image_table_t.png', '_temp_image_table_t.png')
+    py.io.write_image(fig_t, 'results_temp/_temp_image_table_t.png', format='png', width=500, scale=2)
+    CropEmptySpace('results_temp/_temp_image_table_t.png', 'results_temp/_temp_image_table_t.png')
     
 
-#============
-#Deletes temporary files
-#============
-def DelTemp():
-    rm('_temp_image_chart.png')
-    rm('_temp_image_table_t.png')
 
 
 #============
 #QUESTIONS
 #============
+
 #Information about one question
 def OneQuestion(results, answers, question_number):
-
+    
+    if not os.path.exists('results_temp'):
+        os.makedirs('results_temp')
 #    question_number = 1 #START FROM 1
     
     distibution_of_answers= {
@@ -259,8 +268,8 @@ def OneQuestion(results, answers, question_number):
     
     data=[table_1]
     fig = go.Figure(data=data)
-    py.io.write_image(fig, '_temp_image_table1.png', format='png', width=400, scale=2)
-    CropEmptySpace('_temp_image_table1.png', '_temp_image_table1.png')
+    py.io.write_image(fig, 'results_temp/_temp_image_table1.png', format='png', width=400, scale=2)
+    CropEmptySpace('results_temp/_temp_image_table1.png', 'results_temp/_temp_image_table1.png')
     
     table_2 = go.Table(
             header = dict(
@@ -283,9 +292,9 @@ def OneQuestion(results, answers, question_number):
     data=[table_2]
     fig = go.Figure(data=data)
     #fig.add_table()
-    py.io.write_image(fig, '_temp_image_table2.png', format='png', width=400, scale=2)
+    py.io.write_image(fig, 'results_temp/_temp_image_table2.png', format='png', width=400, scale=2)
     #table_2_image = py.io.to_image(fig, format='png', width=400, scale=2)
-    CropEmptySpace('_temp_image_table2.png', '_temp_image_table2.png')
+    CropEmptySpace('results_temp/_temp_image_table2.png', 'results_temp/_temp_image_table2.png')
     
     
     #============
@@ -349,40 +358,52 @@ def OneQuestion(results, answers, question_number):
     #fig.add_bar()
     
     
-    py.io.write_image(fig, '_temp_image_question.png', format='png', width=450, height=370, scale=2)
-    CropEmptySpace('_temp_image_question.png', '_temp_image_question.png')
+    py.io.write_image(fig, 'results_temp/_temp_image_question.png', format='png', width=450, height=370, scale=2)
+    CropEmptySpace('results_temp/_temp_image_question.png', 'results_temp/_temp_image_question.png')
     
-    output_filename = '_question_image{}.png'.format(question_number)
+    output_filename = 'results_temp/_question_image{}.png'.format(question_number)
     
-    final_question_image = MergeVertical('_temp_image_table1.png', '_temp_image_table2.png', 25)
+    final_question_image = MergeVertical('results_temp/_temp_image_table1.png', 'results_temp/_temp_image_table2.png', 25)
     final_question_image.save(output_filename)
-    final_question_image = MergeHorizontal('_temp_image_question.png',output_filename, 5)
+    final_question_image = MergeHorizontal('results_temp/_temp_image_question.png',output_filename, 5)
     final_question_image.save(output_filename)
-    rm('_temp_image_table1.png')
-    rm('_temp_image_table2.png')
-    rm('_temp_image_question.png')
+    rm('results_temp/_temp_image_table1.png')
+    rm('results_temp/_temp_image_table2.png')
+    rm('results_temp/_temp_image_question.png')
     return output_filename
 
-if not os.path.exists('temp'):
-    os.makedirs('temp')
+
+
+
+
+
+
+
+
+
+#============
+#Add image to the question
+#resizes and adds vertical to question chart
+#============
 
 def AddQuestionImage(question_images, question_charts):
 #    question_images = question_images.sort()
 #    question_charts = question_charts.sort()
     
     for z in range(len(question_images)):
-        CropEmptySpace(question_images[z], os.path.join('temp', os.path.basename(question_images[z])))
-        question_images[z] = os.path.join('temp' , os.path.basename(question_images[z]))
-        ResizeWidth(question_images[z],question_images[z],1000)
+        CropEmptySpace(question_images[z], os.path.join('results_temp', os.path.basename(question_images[z])))
+        question_images[z] = os.path.join('results_temp' , os.path.basename(question_images[z]))
+        ResizeWidth(question_images[z],question_images[z], 1000, 800)
     for i in range(len(question_charts)):
         
         MergeVertical(question_images[i], question_charts[i], 40).save(question_charts[i])
 
 
-#TotalResults(results)
+TotalResults(results)
 question_charts=[]
 for q in range(1,7):
     question_charts.append(OneQuestion(results, answers, q))
-AddQuestionImage(question_images, question_charts)
-#DelTemp()
+#AddQuestionImage(question_images, question_charts)
+
+
 

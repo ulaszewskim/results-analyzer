@@ -18,11 +18,11 @@
   - [X] merge images vertical
   - [X] merge images horizontal
   - [X] resize to specific width
-- [ ] save to PDF file
-  - [ ] cover
-  - [ ] total stats
-  - [ ] question stats
-- [ ] GUI:
+- [X] save to PDF file
+  - [X] cover
+  - [X] total stats
+  - [X] question stats
+- [X] GUI:
   - [X] create skeleton
   - [X] fill list with exams
   - [X] load answer file
@@ -31,3 +31,4 @@
   - [X] load pictures of questions
   - [X] select options
 - [ ] Help tab
+- [ ] Put it all together

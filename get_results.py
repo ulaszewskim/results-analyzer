@@ -8,13 +8,13 @@ github: https://github.com/ulaszewskim
 
 #================
 #Get results of one exam
-#Answers from LoadAnswers
-#Key from GetKey
+#Answers from load_answers
+#Key from get_key
 #Returns list of results, 
 #   [-2]    total points 
 #   [-1]    pass True/False
 #================
-def GetResults(answers, key, all_correct, multiple_sign, pass_rate):
+def get_results(answers, key, all_correct, multiple_sign, pass_rate):
     multiple_sign = multiple_sign.upper()
     results = []
     for s in range(len(answers)):
@@ -34,6 +34,3 @@ def GetResults(answers, key, all_correct, multiple_sign, pass_rate):
             one_result.append(False)
         results.append(one_result)
     return results
-
-
-

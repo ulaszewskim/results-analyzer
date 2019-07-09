@@ -11,8 +11,7 @@ import pandas as pd
 #Get unique exam names
 #Returns list in format [exam name, version]
 #================
-
-def GetExamNames(filename):
+def get_exam_names(filename):
     data = pd.read_csv(filename, sep=';', usecols=[0,1])
     data = data.apply(lambda x: x.astype(str).str.upper())
     exams = data.drop_duplicates()

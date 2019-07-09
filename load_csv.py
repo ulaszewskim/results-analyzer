@@ -12,8 +12,7 @@ import csv
 #Input examname should be like: [Examname, Version]
 #Returns list of lists with uppercased answers to this examname and version
 #================
-
-def LoadAnswers(resultsfile, examname):
+def load_answers(resultsfile, examname):
     with open(resultsfile, newline='') as f:
         reader = csv.reader(f, delimiter=';')
         answers = []
@@ -23,14 +22,11 @@ def LoadAnswers(resultsfile, examname):
                 answers.append(upper_row)
     return answers
 
-
-
 #================
 #Load keys from csv file
 #Returns list of lists with uppercased keys
 #================
-
-def LoadKeys(keysfile):
+def load_keys(keysfile):
     with open(keysfile, newline='') as f:
         reader = csv.reader(f, delimiter=';')
         keys = list(reader)

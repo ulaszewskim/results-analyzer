@@ -8,7 +8,10 @@ It takes 4 different answers: A, B, C, D.
 Information if majority of 15% of students with best results selected other answer than the correct one.
 Possibility of adding question photo to every question in final report.
 
-## Steps:
+## How to run
+Best way to run is to start setup.py and use GUI.
+
+## How to use:
 1.	Select results data file.
 2.	Select correct answers file.
 3.	Select destination directory for the reports.

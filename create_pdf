@@ -7,13 +7,15 @@ github: https://github.com/ulaszewskim
 
 from fpdf import FPDF
 from PIL import Image
+import os
+
 
 class PDF(FPDF):
     def header(self):
         if self.page_no() != 1:
             self.set_font('Arial', size=6)
             self.set_text_color(128)
-            self.cell(0, 4, 'Generated using Result Analyzer, author: Maciej Ulaszewski', 0)
+            self.cell(0, 4, 'Generated using Results Analyzer, author: Maciej Ulaszewski', 0)
             self.ln(7)
 
     def footer(self):
@@ -30,18 +32,10 @@ class PDF(FPDF):
         self.cell(0, 6, 'Question {}'.format(num), 0, 1, 'L', 1)
         self.ln(3)
 
-    def question_body(self, question_image, chart, better_answer):
+    def question_body(self, question_image, chart, better_answer, width):
         self.set_font('Times', '', 12)
-        if question_image != None:
-            image = Image.open(question_image)
-            if image.size[1] <1000:
-                self.image(question_image, w=170)
-            else:
-                if image.size[1]/13.6 < 175:
-                    self.image(question_image, h=image.size[1]/13.6)
-                else:
-                    self.image(question_image, h=175)
-            image.close()
+        if question_image != False:
+            self.image(question_image, w=width)
             self.ln(3)
         self.image(chart, w=175)
         if better_answer[0] == True:
@@ -52,19 +46,21 @@ class PDF(FPDF):
         self.ln(10)
 
     def print_question(self, num, question_image, chart, better_answer):
+        print('        Printing question {}'.format(num))
         position = self.get_y()
+        width=None
         quest_h = 0
-        if question_image != None:
+        if question_image != False:
+            const=0.0836
+            c_w=1
             image = Image.open(question_image)
-            if image.size[1] <1000:
-                quest_h = image.size[1] *0.094
-            else:
-                if image.size[1]/13.6 < 175:
-                    quest_h = image.size[1]/13.6
-                else:
-                    quest_h = 175
+            while image.size[0]*c_w*const >=175 or image.size[1]*c_w*const >=150:
+                c_w-=0.05
+                if c_w<=0.05:
+                    break
             image.close()
-        quest_h+=1
+            width = image.size[0]*c_w*const
+            quest_h= image.size[1]*c_w*const
         all_h = 9 + 72 + quest_h
         if better_answer[0] == True:
             all_h = all_h + 5
@@ -72,7 +68,7 @@ class PDF(FPDF):
             self.add_page()
         
         self.question_title(num)
-        self.question_body(question_image, chart, better_answer)
+        self.question_body(question_image, chart, better_answer, width)
         
     def cover(self, examname, version):
         self.ln(110)
@@ -93,9 +89,9 @@ class PDF(FPDF):
         self.image(chart, w=190)
 
 #better answer will be list of lists
-def create_raport(examname, version, table_t, chart_t, charts, question_images, better_answer):
+def create_report(examname, version, table_t, chart_t, charts, question_images, better_answers, destination):
     pdf = PDF()
-    pdf.set_title(examname)
+    pdf.set_title(examname + ' ' + version)
     pdf.set_author('Results Analyzer')
     pdf.add_page()
     pdf.cover(examname, version)
@@ -103,6 +99,8 @@ def create_raport(examname, version, table_t, chart_t, charts, question_images, 
     pdf.total_stats(table_t, chart_t)
     pdf.add_page()
     for q in range(1,len(charts)+1):
-        pdf.print_question(q, question_images[q-1], charts[q-1], better_answer)
-    
-    pdf.output('{}_{}_results.pdf'.format(examname, version), 'F')
+        if question_images == False:
+            pdf.print_question(q, False, charts[q-1], better_answers[q-1])
+        else:
+            pdf.print_question(q, question_images[q-1], charts[q-1], better_answers[q-1])
+    pdf.output(os.path.join(destination, '{}_{}_results.pdf'.format(examname, version)), 'F')

@@ -111,7 +111,7 @@ def total_results(results, answers, pass_rate):
     #============
     total_stats = [
             ['Questions','Total students', 'Passed', 'Failed'],
-            [total_q,len(results), str(how_many_passed)+' ('+str(percent_passed)+'%)', str(len(results)-how_many_passed)+' ('+str(100-percent_passed)+'%)']
+            [total_q,len(results), str(how_many_passed)+' ('+str(round(percent_passed,2))+'%)', str(len(results)-how_many_passed)+' ('+str(round(100-percent_passed,2))+'%)']
             ]
     table_t = go.Table(
             header = dict(

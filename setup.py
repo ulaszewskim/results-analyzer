@@ -10,7 +10,8 @@ from tkinter import ttk
 import tkinter.filedialog as fd
 import tkinter.messagebox as msg
 import tkinter.scrolledtext as scrolledtext
-import os 
+import os
+from shutil import rmtree
 from get_exam_names import get_exam_names
 from load_csv import load_keys, load_answers
 from get_results import get_results
@@ -18,19 +19,19 @@ from get_key import get_key
 from create_charts import total_results, one_question
 from create_pdf import create_report
 from check_for_better_answer import check_for_better_answer
-from shutil import rmtree
 
-#================
-#Fill table with exam names and versions
-#================
-def fill_table(resultsfile, keysfile):
+
+
+def fill_table(resultsfile):
+    """
+    Fill table with exam names and versions
+    """
     exams = get_exam_names(resultsfile)
-    row=1
-    global images, total_exams
-    total_exams = len(exams)
-    for i in range(len(exams)):
-        images.append(False)
-        exam = exams[i]
+    row = 1
+    global IMAGES, TOTAL_EXAMS
+    TOTAL_EXAMS = len(exams)
+    for exam in exams:
+        IMAGES.append(False)
         chk = tk.Checkbutton(exams_win, command=lambda row=row: check(row))
         chk.grid(row=row, column=0, pady=2, padx=2)
         var_name = tk.StringVar()
@@ -48,25 +49,26 @@ def fill_table(resultsfile, keysfile):
         pic_var.set('')
         pictures_entry = tk.Entry(exams_win, textvariable=pic_var, state='disabled', disabledbackground='gray95', disabledforeground='black', width=8)
         pictures_entry.grid(row=row, column=4, pady=2, padx=2)
-        load_btn = tk.Button(exams_win, text="Load", font=('','8'), width=10, state='disabled', command = lambda row=row: choose_images_files(row))
+        load_btn = tk.Button(exams_win, text="Load", font=('', '8'), width=10, state='disabled', command=lambda row=row: choose_images_files(row))
         load_btn.grid(row=row, column=5, pady=2, padx=2)
         var = tk.StringVar()
-        var.set(str(exams[i][0])+'_'+str(exams[i][1]) + '_results.pdf')
-        final_file = tk.Entry(exams_win, textvariable=var, state='disabled', disabledbackground='gray95', disabledforeground='black', width=33 )
+        var.set(str(exam[0])+'_'+str(exam[1]) + '_results.pdf')
+        final_file = tk.Entry(exams_win, textvariable=var, state='disabled', disabledbackground='gray95', disabledforeground='black', width=33)
         final_file.grid(row=row, column=6, pady=2, padx=2)
-        bar['value'] = (i+1)*100/len(exams)
+        bar['value'] = (row+1)*100/len(exams)
         bar.update()
-        row+=1
+        row += 1
     exams_win.update_idletasks()
     canvas.config(scrollregion=canvas.bbox('all'))
     select_h.config(state='normal')
     bar['value'] = 0
     bar.update()
 
-#================
-#Change foreground of specific row
-#================
+
 def change_foreground(row, color):
+    """
+    Change foreground of specific row
+    """
     examname = exams_win.grid_slaves(row=row, column=1)[0]
     examname.config(disabledforeground=color)
     examname.update()
@@ -83,15 +85,16 @@ def change_foreground(row, color):
     resultsfile.config(disabledforeground=color)
     resultsfile.update()
 
-#================
-#Fill table with keys info
-#================
+
 def fill_keys(keysfile):
+    """
+    Fill table with keys info
+    """
     answers = load_keys(keysfile)
-    for row in range(1,total_exams+1):
+    for row in range(1, TOTAL_EXAMS+1):
         chk = exams_win.grid_slaves(row=row, column=0)[0]
-        a=chk.configure()['variable'][4]
-        b=int(chk.getvar(name=a))
+        a = chk.configure()['variable'][4]
+        b = int(chk.getvar(name=a))
         ans_en = exams_win.grid_slaves(row=row, column=3)[0]
         exam_name = exams_win.grid_slaves(row=row, column=1)[0]
         exam_vers = exams_win.grid_slaves(row=row, column=2)[0]
@@ -105,8 +108,8 @@ def fill_keys(keysfile):
         ans_en.config(state='disabled')
         uncheck_row(row)
         chk.deselect()
-        for k in range(len(answers)):
-            if answers[k][0] == exam_name and answers[k][1] == exam_vers:
+        for answer in answers:
+            if answer[0] == exam_name and answer[1] == exam_vers:
                 change_foreground(row, 'black')
                 ans_en.config(state='normal')
                 ans_en.delete(0, tk.END)
@@ -116,59 +119,64 @@ def fill_keys(keysfile):
                 if b == 1:
                     check_row(row)
                     chk.select()
-                del answers[k]
+                del answer
                 break
-        bar['value'] = (row+1)*100/total_exams
+        bar['value'] = (row+1)*100/TOTAL_EXAMS
         bar.update()
     bar['value'] = 0
     bar.update()
 
-#================
-#Choose results csv file
-#================
+
 def choose_results_file():
+    """
+    Choose results csv file
+    """
     resultsfile = fd.askopenfilename(filetypes=[('.csv', '*.csv')])
     csv_dir.delete(0, tk.END)
     csv_dir.insert(tk.INSERT, resultsfile)
-    fill_table(csv_dir.get(),key_dir.get())
+    fill_table(csv_dir.get())
     key_btn.config(state='normal')
 
-#================
-#Choose keys csv file
-#================
+
 def choose_keys_file():
+    """
+    Choose keys csv file
+    """
     keysfile = fd.askopenfilename(filetypes=[('.csv', '*.csv')])
     key_dir.delete(0, tk.END)
     key_dir.insert(tk.INSERT, keysfile)
     fill_keys(key_dir.get())
     dst_btn['state'] = 'normal'
 
-#================
-#Choose destination directory for the reports
-#================
+
 def choose_destination_folder():
+    """
+    Choose destination directory for the reports
+    """
     destination = fd.askdirectory()
     dst_dir.delete(0, tk.END)
     dst_dir.insert(tk.INSERT, destination)
     start_btn['state'] = 'normal'
 
-#================
-#Choose images to the questions
-#================
+
 def choose_images_files(row):
+    """
+    Choose images to the questions
+    """
     imagefiles = fd.askopenfilenames(filetypes=[('Image files', '*.jpg'), ('Image files', '*.png')])
-    global images
-    images[row-1]=list(imagefiles)
-    images[row-1].sort()
+    global IMAGES
+    IMAGES[row-1] = list(imagefiles)
+    IMAGES[row-1].sort()
     exams_win.grid_slaves(row=row, column=4)[0].config(state='normal')
     exams_win.grid_slaves(row=row, column=4)[0].delete(0, tk.END)
-    exams_win.grid_slaves(row=row, column=4)[0].insert(tk.INSERT, len(images[row-1]))
+    exams_win.grid_slaves(row=row, column=4)[0].insert(tk.INSERT, len(IMAGES[row-1]))
     exams_win.grid_slaves(row=row, column=4)[0].config(state='disabled')
 
-#================
-#Changes when row is checked
-#================
+
 def check_row(row):
+    """
+    Changes when row is checked
+    """
     examname = exams_win.grid_slaves(row=row, column=1)[0]
     examname.config(disabledbackground='lightgreen')
     examname.update()
@@ -188,10 +196,11 @@ def check_row(row):
     resultsfile.config(disabledbackground='lightgreen')
     resultsfile.update()
 
-#================
-#Changes when row is unchecked
-#================
+
 def uncheck_row(row):
+    """
+    Changes when row is unchecked
+    """
     examname = exams_win.grid_slaves(row=row, column=1)[0]
     examname.config(disabledbackground='grey95')
     examname.update()
@@ -211,43 +220,46 @@ def uncheck_row(row):
     resultsfile.config(disabledbackground='grey95')
     resultsfile.update()
 
-#================
-#Changes state of checkbutton
-#================
+
 def check(row):
-    btn=exams_win.grid_slaves(column=0, row=row)[0]
-    a=btn.configure()['variable'][4]
-    b=int(btn.getvar(name=a))
-    if b==1:
-        if btn['state']=='normal':
+    """
+    Changes state of checkbutton
+    """
+    btn = exams_win.grid_slaves(column=0, row=row)[0]
+    a = btn.configure()['variable'][4]
+    b = int(btn.getvar(name=a))
+    if b == 1:
+        if btn['state'] == 'normal':
             check_row(row)
     else:
-        if btn['state']=='normal':
+        if btn['state'] == 'normal':
             uncheck_row(row)
 
-#================
-#Select/unselect all the checkbuttons
-#================
+
 def check_all():
+    """
+    Select/unselect all the checkbuttons
+    """
     val = select_var.get()
     if val == 0:
-        for row in range(1,total_exams+1):
+        for row in range(1, TOTAL_EXAMS+1):
             chk = exams_win.grid_slaves(row=row, column=0)[0]
-            if chk['state']=='normal':
+            if chk['state'] == 'normal':
                 chk.select()
                 chk.invoke()
             else:
                 chk.deselect()
     else:
-        for row in range(1,total_exams+1):
+        for row in range(1, TOTAL_EXAMS+1):
             chk = exams_win.grid_slaves(row=row, column=0)[0]
             chk.deselect()
             chk.invoke()
 
-#================
-#Start generating reports
-#================
+
 def start():
+    """
+    Start generating reports
+    """
     destination = dst_file.get()
     if destination == '':
         msg.showerror('Error', 'Select destination directory')
@@ -258,24 +270,24 @@ def start():
     resultsfile = csv_dir.get()
     keys = load_keys(key_dir.get())
     #get total exams to do to update statusbar
-    count=0
-    count_done=0
+    count = 0
+    count_done = 0
     ans = (len(keys[0])-2)*2
-    for row in range(1,total_exams+1):
+    pass_rate = float(pass_r.get())
+    for row in range(1, TOTAL_EXAMS+1):
         chk = exams_win.grid_slaves(row=row, column=0)[0]
-        a=chk.configure()['variable'][4]
-        b=int(chk.getvar(name=a))
-        if b==1:
-            count+=ans + 1 + 1 +1 +1
+        a = chk.configure()['variable'][4]
+        b = int(chk.getvar(name=a))
+        if b == 1:
+            count += ans + 1 + 1 + 1 + 1
     if count == 0:
         msg.showerror('Error', 'Select at least one exam')
     #generate reports
-    for row in range(1,total_exams+1):
-        pass_rate = float(pass_r.get())
+    for row in range(1, TOTAL_EXAMS+1):
         chk = exams_win.grid_slaves(row=row, column=0)[0]
-        a=chk.configure()['variable'][4]
-        b=int(chk.getvar(name=a))
-        if b==1:
+        a = chk.configure()['variable'][4]
+        b = int(chk.getvar(name=a))
+        if b == 1:
             examname = exams_win.grid_slaves(row=row, column=1)[0]
             examname = examname.get()
             version = exams_win.grid_slaves(row=row, column=2)[0]
@@ -286,38 +298,38 @@ def start():
             if pass_unit.get() == 2:
                 pass_rate = (pass_rate/100)*(len(key)-2)
                 print(pass_rate)
-            if pass_rate>int(pass_rate):
+            if pass_rate > int(pass_rate):
                 pass_rate = int(pass_rate)+1
             else:
-                pass_rate=int(pass_rate)
+                pass_rate = int(pass_rate)
             print(pass_rate)
-            count_done+=1
+            count_done += 1
             bar['value'] = (count_done)*100/count
             bar.update()
             print('    Getting results')
             results = get_results(answers, key, all_correct, multiple_sign, pass_rate)
-            count_done+=1
+            count_done += 1
             bar['value'] = (count_done)*100/count
             bar.update()
             print('    Creating total charts')
             total_results(results, answers, pass_rate)
             table_t = 'results_temp/_temp_image_table_t.png'
             chart_t = 'results_temp/_temp_image_chart.png'
-            charts=[]
+            charts = []
             b_answers = []
-            count_done+=1
+            count_done += 1
             bar['value'] = (count_done)*100/count
             bar.update()
             print('    Creating question charts')
-            for c in range(1,len(key)-1):
+            for c in range(1, len(key)-1):
                 charts.append(one_question(results, answers, c, key))
-                b_answers.append(check_for_better_answer(pass_rate,c,answers,results,key, multiple_sign, all_correct))
-                count_done+=1
+                b_answers.append(check_for_better_answer(pass_rate, c, answers, results, key, multiple_sign, all_correct))
+                count_done += 1
                 bar['value'] = (count_done)*100/count
                 bar.update()
             print('    Generating report...')
-            create_report(examname, version, table_t, chart_t, charts, images[row-1], b_answers, destination)
-            count_done+=ans/2
+            create_report(examname, version, table_t, chart_t, charts, IMAGES[row-1], b_answers, destination)
+            count_done += ans/2
             bar['value'] = (count_done)*100/count
             bar.update()
             print('Report {} {} generated'.format(examname, version))
@@ -330,8 +342,8 @@ def start():
 #================
 #Create global variables
 #================
-images=[]
-total_exams = 0
+IMAGES = []
+TOTAL_EXAMS = 0
 
 #================
 #Create main window
@@ -340,14 +352,14 @@ window = tk.Tk()
 window.title('Results Analyzer')
 window.geometry('700x700+20+20')
 tabControl = ttk.Notebook(window)
-frame1=tk.Frame(window,bd=1)
+frame1 = tk.Frame(window, bd=1)
 frame1.grid(sticky='news')
-tabControl.add(frame1, text = 'Analyzer')
-tabControl.grid(column=0,row=0)
-frame2=tk.Frame(window, bd=1)
+tabControl.add(frame1, text='Analyzer')
+tabControl.grid(column=0, row=0)
+frame2 = tk.Frame(window, bd=1)
 frame2.grid(sticky='news')
-tabControl.add(frame2, text = 'Help')
-tabControl.grid(column=1,row=0)
+tabControl.add(frame2, text='Help')
+tabControl.grid(column=1, row=0)
 
 #================
 #Frame1 - Analyzer
@@ -359,24 +371,24 @@ bar['value'] = 0
 bar.grid(column=0, row=0, columnspan=6, sticky='W', padx=5, pady=5)
 
 #Start button
-start_btn = tk.Button(frame1, text='Start', font=('','12'), state='disabled', command=start)
+start_btn = tk.Button(frame1, text='Start', font=('', '12'), state='disabled', command=start)
 start_btn.grid(column=6, row=0, padx=5, sticky='w')
 
 #Select csv file with results
-csv_h = tk.Label(frame1, text = "Select results file:")
+csv_h = tk.Label(frame1, text="Select results file:")
 csv_h.grid(column=0, row=1, sticky='W', padx=5)
 csv_file = tk.StringVar()
-csv_dir = tk.Entry(frame1, width=43, state = 'normal', textvariable = csv_file)
+csv_dir = tk.Entry(frame1, width=43, state='normal', textvariable=csv_file)
 csv_dir.grid(column=0, row=2, sticky='w', padx=5)
-csv_btn = tk.Button(frame1, text = 'Select', command=choose_results_file)
+csv_btn = tk.Button(frame1, text='Select', command=choose_results_file)
 csv_btn.grid(column=1, row=2, sticky='w')
 
 #separator
-sep = tk.Label(frame1, text = "")
+sep = tk.Label(frame1, text="")
 sep.grid(column=2, row=1, sticky='w', padx=5)
 
 #select key
-key_h = tk.Label(frame1, text = "Select correct answers file:")
+key_h = tk.Label(frame1, text="Select correct answers file:")
 key_h.grid(column=0, row=3, sticky='w', padx=5, columnspan=3)
 key_file = tk.StringVar()
 key_dir = tk.Entry(frame1, width=43, state = 'normal', textvariable = key_file)
@@ -385,11 +397,11 @@ key_btn = tk.Button(frame1, text = 'Select', command = choose_keys_file, state =
 key_btn.grid(column=1, row=4, sticky='w')
 
 #separator
-sep = tk.Label(frame1, text = "")
+sep = tk.Label(frame1, text="")
 sep.grid(column=2, row=4, sticky='w', padx=5)
 
 #Select destination folder
-dst_h = tk.Label(frame1, text = "Select destination folder:")
+dst_h = tk.Label(frame1, text="Select destination folder:")
 dst_h.grid(column=0, row=5, sticky='w', padx=5)
 dst_file = tk.StringVar()
 dst_dir = tk.Entry(frame1, width=43, state = 'normal', textvariable = dst_file)
@@ -398,18 +410,18 @@ dst_btn = tk.Button(frame1, state = 'disabled', text = 'Select', command=choose_
 dst_btn.grid(column=1, row=6, sticky='w')
 
 #Input separator when multiple answers
-multi_h = tk.Label(frame1, text = "Multiple separator:")
+multi_h = tk.Label(frame1, text="Multiple separator:")
 multi_h.grid(column=3, row=2, sticky='w')
 multi = tk.StringVar()
 multi_dir = tk.Entry(frame1, width=10, state = 'normal', textvariable = multi)
 multi_dir.grid(column=4, row=2, sticky='w', padx=2)
 '''
 #separator
-sep = tk.Label(frame1, text = "")
+sep = tk.Label(frame1, text="")
 sep.grid(column=2, row=2, sticky='w', padx=5)
 '''
 #Input sign when all answers are correct
-allcor_h = tk.Label(frame1, text = "All correct symbol:")
+allcor_h = tk.Label(frame1, text="All correct symbol:")
 allcor_h.grid(column=3, row=4, sticky='w')
 allcor = tk.StringVar()
 allcor_dir = tk.Entry(frame1, width=10, state = 'normal', textvariable = allcor)
@@ -479,4 +491,3 @@ del readme
 
 
 window.mainloop()
-

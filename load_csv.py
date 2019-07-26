@@ -7,12 +7,13 @@ github: https://github.com/ulaszewskim
 
 import csv
 
-#================
-#Load answers from csv file
-#Input examname should be like: [Examname, Version]
-#Returns list of lists with uppercased answers to this examname and version
-#================
+
 def load_answers(resultsfile, examname):
+    """
+    Load answers from csv file
+    Input examname should be like: [Examname, Version]
+    Returns list of lists with uppercased answers to this examname and version
+    """
     with open(resultsfile, newline='') as f:
         reader = csv.reader(f, delimiter=';')
         answers = []
@@ -22,20 +23,20 @@ def load_answers(resultsfile, examname):
                 answers.append(upper_row)
     return answers
 
-#================
-#Load keys from csv file
-#Returns list of lists with uppercased keys
-#================
+
 def load_keys(keysfile):
+    """
+    Load keys from csv file
+    Returns list of lists with uppercased keys
+    """
     with open(keysfile, newline='') as f:
         reader = csv.reader(f, delimiter=';')
         keys = list(reader)
-        keys_no_empty=[]
-        for z in range(len(keys)):
-            if keys[z][2] != '':
-                keys_no_empty.append(keys[z])
-        keys_up=[]
-        for i in range(len(keys_no_empty)):
-            keys_up.append([item.upper() for item in keys_no_empty[i]])
+        keys_no_empty = []
+        for key in keys:
+            if key[2] != '':
+                keys_no_empty.append(key)
+        keys_up = []
+        for key in keys_no_empty:
+            keys_up.append([item.upper() for item in key])
     return keys_up
-
